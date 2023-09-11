@@ -90,6 +90,12 @@ public class GameState {
 		}
 		return null;
 	}
+	
+	/*
+	 * 
+	 * TODO: Add Promotion
+	 * 
+	 */
 
 	public ArrayList<Coordinate> givePawnMoves(Coordinate pos) {
 		int x = pos.x;
@@ -105,9 +111,9 @@ public class GameState {
 			}
 			if (board[x][y + 1] == 0)
 				moves.add(new Coordinate(x, y + 1));
-			if (x > 0 && board[x - 1][y + 1] < 0)
+			if (!oob(x-1, y+1) && board[x - 1][y + 1] < 0)
 				moves.add(new Coordinate(x - 1, y + 1));
-			if (x < 7 && board[x + 1][y + 1] < 0)
+			if (!oob(x+1, y+1) && board[x + 1][y + 1] < 0)
 				moves.add(new Coordinate(x + 1, y + 1));
 		} else {
 			if (y == 6) {
@@ -116,9 +122,9 @@ public class GameState {
 			}
 			if (board[x][y - 1] == 0)
 				moves.add(new Coordinate(x, y - 1));
-			if (x > 0 && board[x - 1][y - 1] > 0)
+			if (!oob(x-1, y-1) && board[x - 1][y - 1] > 0)
 				moves.add(new Coordinate(x - 1, y - 1));
-			if (x < 7 && board[x + 1][y - 1] > 0)
+			if (!oob(x+1, y-1) && board[x + 1][y - 1] > 0)
 				moves.add(new Coordinate(x + 1, y - 1));
 		}
 
@@ -138,7 +144,7 @@ public class GameState {
 			// +x
 			while (true) {
 				currentX++;
-				if (currentX > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -151,7 +157,7 @@ public class GameState {
 			// -x
 			while (true) {
 				currentX--;
-				if (currentX < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -164,7 +170,7 @@ public class GameState {
 			// +y
 			while (true) {
 				currentY++;
-				if (currentY > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -177,7 +183,7 @@ public class GameState {
 			// -y
 			while (true) {
 				currentY--;
-				if (currentY < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -191,7 +197,7 @@ public class GameState {
 			// +x
 			while (true) {
 				currentX++;
-				if (currentX > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -204,7 +210,7 @@ public class GameState {
 			// -x
 			while (true) {
 				currentX--;
-				if (currentX < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -217,7 +223,7 @@ public class GameState {
 			// +y
 			while (true) {
 				currentY++;
-				if (currentY > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -230,7 +236,7 @@ public class GameState {
 			// -y
 			while (true) {
 				currentY--;
-				if (currentY < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -254,7 +260,7 @@ public class GameState {
 			for(int i = 0; i < 8; i++) {
 				int newX = x + Constants.knightMoves[i][0];
 				int newY = y + Constants.knightMoves[i][1];
-				if(newX > 7 || newX < 0 || newY > 7 || newY < 0) continue;
+				if(oob(newX, newY)) continue;
 				if(board[newX][newY] > 0) continue;
 				moves.add(new Coordinate(newX, newY));
 			}
@@ -262,7 +268,7 @@ public class GameState {
 			for(int i = 0; i < 8; i++) {
 				int newX = x + Constants.knightMoves[i][0];
 				int newY = y + Constants.knightMoves[i][1];
-				if(newX > 7 || newX < 0 || newY > 7 || newY < 0) continue;
+				if(oob(newX, newY)) continue;
 				if(board[newX][newY] < 0) continue;
 				moves.add(new Coordinate(newX, newY));
 			}
@@ -285,9 +291,7 @@ public class GameState {
 			while (true) {
 				currentX++;
 				currentY++;
-				if (currentX > 7)
-					break;
-				if (currentY > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -301,9 +305,7 @@ public class GameState {
 			while (true) {
 				currentX--;
 				currentY++;
-				if (currentX < 0)
-					break;
-				if (currentY > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -317,9 +319,7 @@ public class GameState {
 			while (true) {
 				currentX++;
 				currentY--;
-				if (currentX > 7)
-					break;
-				if (currentY < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -333,9 +333,7 @@ public class GameState {
 			while (true) {
 				currentX--;
 				currentY--;
-				if (currentX < 0)
-					break;
-				if (currentY < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
@@ -350,9 +348,7 @@ public class GameState {
 			while (true) {
 				currentX++;
 				currentY++;
-				if (currentX > 7)
-					break;
-				if (currentY > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -366,9 +362,7 @@ public class GameState {
 			while (true) {
 				currentX--;
 				currentY++;
-				if (currentX < 0)
-					break;
-				if (currentY > 7)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -382,9 +376,7 @@ public class GameState {
 			while (true) {
 				currentX++;
 				currentY--;
-				if (currentX > 7)
-					break;
-				if (currentY < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -398,9 +390,7 @@ public class GameState {
 			while (true) {
 				currentX--;
 				currentY--;
-				if (currentX < 0)
-					break;
-				if (currentY < 0)
+				if (oob(currentX, currentY))
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
@@ -436,7 +426,25 @@ public class GameState {
 	
 	// assume that the king in the current board state is not existent, and is instead replaced by the one at pos
 	public boolean whiteKingInCheck(Coordinate pos) {
+		int x = pos.x;
+		int y = pos.y;
 		
+		int newX;
+		int newY;
+		for(int i = 0; i < 8; i++) {
+			newX = x + Constants.knightMoves[i][0];
+			newY = y + Constants.knightMoves[i][1];
+			if(oob(newX, newY)) continue;
+			if(board[newX][newY] == -3 ) return true;	
+		}
+		
+		
+		
+		return false;
+	}
+	
+	public boolean oob(int x, int y) {
+		if(x > 7 || x < 0 || y > 7 || y < 0) return true;
 		return false;
 	}
 
