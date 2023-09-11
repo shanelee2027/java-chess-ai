@@ -6,7 +6,7 @@ public class Main {
 		GameState gs = new GameState();
 		gs.initializeBoard();
 		
-		gs.board[1][3] = -5;
+		gs.board[1][4] = 3;
 
 		for (int i = 7; i >= 0; i--) {
 			for (int j = 0; j < 8; j++) {
@@ -15,7 +15,7 @@ public class Main {
 			System.out.println();
 		}
 		
-		System.out.println(gs.giveMoves(new Coordinate(1, 3)));
+		System.out.println(gs.giveMoves(new Coordinate(1, 4)));
 	}
 
 }

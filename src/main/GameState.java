@@ -9,6 +9,9 @@ public class GameState {
 	int blackPieceCount = 39;
 	int whiteCenterScore;
 	int blackCenterScore;
+	
+	static boolean whiteCanCastle = true;
+	static boolean blackCanCastle = true;
 
 	public GameState() {
 
@@ -246,9 +249,23 @@ public class GameState {
 		boolean whiteColor = board[x][y] > 0;
 
 		ArrayList<Coordinate> moves = new ArrayList<>();
-
+		
 		if (whiteColor) {
-
+			for(int i = 0; i < 8; i++) {
+				int newX = x + Constants.knightMoves[i][0];
+				int newY = y + Constants.knightMoves[i][1];
+				if(newX > 7 || newX < 0 || newY > 7 || newY < 0) continue;
+				if(board[newX][newY] > 0) continue;
+				moves.add(new Coordinate(newX, newY));
+			}
+		} else {
+			for(int i = 0; i < 8; i++) {
+				int newX = x + Constants.knightMoves[i][0];
+				int newY = y + Constants.knightMoves[i][1];
+				if(newX > 7 || newX < 0 || newY > 7 || newY < 0) continue;
+				if(board[newX][newY] < 0) continue;
+				moves.add(new Coordinate(newX, newY));
+			}
 		}
 
 		return moves;
@@ -415,6 +432,12 @@ public class GameState {
 		}
 
 		return moves;
+	}
+	
+	// assume that the king in the current board state is not existent, and is instead replaced by the one at pos
+	public boolean whiteKingInCheck(Coordinate pos) {
+		
+		return false;
 	}
 
 }
