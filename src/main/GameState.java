@@ -10,11 +10,21 @@ public class GameState {
 	int whiteCenterScore;
 	int blackCenterScore;
 	
-	static boolean whiteCanCastle = true;
-	static boolean blackCanCastle = true;
+	int movesPlayed = 0;
+	
+	boolean whiteKingSideCastlingPiecesMoved = false;
+	boolean whiteQueenSideCastlingPiecesMoved = false;
+	boolean blackKingSideCastlingPiecesMoved = false;
+	boolean blackQueenSideCastlingPiecesMoved = false;
+	
+	Coordinate[][] coordinates = new Coordinate[8][8];
 
 	public GameState() {
-
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				coordinates[i][j] = new Coordinate(i, j);
+			}
+		}
 	}
 
 	public void initializeBoard() {
@@ -56,11 +66,11 @@ public class GameState {
 
 		// queens
 		board[3][0] = 5;
-		board[4][7] = -5;
+		board[3][7] = -5;
 
 		// kings
 		board[4][0] = 6;
-		board[3][7] = -6;
+		board[4][7] = -6;
 	}
 
 	public void calculatePieceCount() {
@@ -107,25 +117,25 @@ public class GameState {
 		if (whiteColor) {
 			if (y == 1) {
 				if (board[x][y + 1] == 0 && board[x][y + 2] == 0)
-					moves.add(new Coordinate(x, y + 2));
+					moves.add(coordinates[x][y+2]);
 			}
 			if (board[x][y + 1] == 0)
-				moves.add(new Coordinate(x, y + 1));
+				moves.add(coordinates[x][y+1]);
 			if (!oob(x-1, y+1) && board[x - 1][y + 1] < 0)
-				moves.add(new Coordinate(x - 1, y + 1));
+				moves.add(coordinates[x-1][y+1]);
 			if (!oob(x+1, y+1) && board[x + 1][y + 1] < 0)
-				moves.add(new Coordinate(x + 1, y + 1));
+				moves.add(coordinates[x+1][y+1]);
 		} else {
 			if (y == 6) {
 				if (board[x][y - 1] == 0 && board[x][y - 2] == 0)
-					moves.add(new Coordinate(x, y - 2));
+					moves.add(coordinates[x][y-2]);
 			}
 			if (board[x][y - 1] == 0)
-				moves.add(new Coordinate(x, y - 1));
+				moves.add(coordinates[x][y-1]);
 			if (!oob(x-1, y-1) && board[x - 1][y - 1] > 0)
-				moves.add(new Coordinate(x - 1, y - 1));
+				moves.add(coordinates[x-1][y-1]);
 			if (!oob(x+1, y-1) && board[x + 1][y - 1] > 0)
-				moves.add(new Coordinate(x + 1, y - 1));
+				moves.add(coordinates[x+1][y-1]);
 		}
 
 		return moves;
@@ -148,7 +158,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -161,7 +171,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -174,7 +184,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -187,7 +197,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -201,7 +211,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -214,7 +224,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -227,7 +237,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -240,7 +250,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -262,7 +272,7 @@ public class GameState {
 				int newY = y + Constants.knightMoves[i][1];
 				if(oob(newX, newY)) continue;
 				if(board[newX][newY] > 0) continue;
-				moves.add(new Coordinate(newX, newY));
+				moves.add(coordinates[newX][newY]);
 			}
 		} else {
 			for(int i = 0; i < 8; i++) {
@@ -270,7 +280,7 @@ public class GameState {
 				int newY = y + Constants.knightMoves[i][1];
 				if(oob(newX, newY)) continue;
 				if(board[newX][newY] < 0) continue;
-				moves.add(new Coordinate(newX, newY));
+				moves.add(coordinates[newX][newY]);
 			}
 		}
 
@@ -295,7 +305,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -309,7 +319,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -323,7 +333,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -337,7 +347,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] > 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] < 0)
 					break;
 			}
@@ -352,7 +362,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -366,7 +376,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -380,7 +390,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -394,7 +404,7 @@ public class GameState {
 					break;
 				if (board[currentX][currentY] < 0)
 					break;
-				moves.add(new Coordinate(currentX, currentY));
+				moves.add(coordinates[currentX][currentY]);
 				if (board[currentX][currentY] > 0)
 					break;
 			}
@@ -438,9 +448,261 @@ public class GameState {
 			if(board[newX][newY] == -3 ) return true;	
 		}
 		
+		// pawns
+		if(!oob(x-1, y+1) && board[x-1][y+1] == -1) return true;
+		if(!oob(x+1, y+1) && board[x+1][y+1] == -1) return true;
 		
+		// king
+		for(int i = -1; i <= 1; i++) {
+			for(int j = -1; j <= 1; j++) {
+				if(oob(x+i, y+j)) continue;
+				if(board[x+i][y+j] == -6) return true;
+			}
+		}
+		
+		// files and diagonals
+		newX = x;
+		newY = y;
+		while(true) {
+			newY++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -2 || board[newX][newY] == -5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX++;
+			newY++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -4 || board[newX][newY] == -5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -2 || board[newX][newY] == -5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX++;
+			newY--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -4 || board[newX][newY] == -5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newY--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -2 || board[newX][newY] == -5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX--;
+			newY--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -4 || board[newX][newY] == -5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -2 || board[newX][newY] == -5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX--;
+			newY++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == 6) continue;
+			if(board[newX][newY] > 0) break;
+			if(board[newX][newY] == -4 || board[newX][newY] == -5) return true;
+			break;
+		}
 		
 		return false;
+	}
+	
+	public boolean blackKingInCheck(Coordinate pos) {
+		int x = pos.x;
+		int y = pos.y;
+		
+		int newX;
+		int newY;
+		for(int i = 0; i < 8; i++) {
+			newX = x + Constants.knightMoves[i][0];
+			newY = y + Constants.knightMoves[i][1];
+			if(oob(newX, newY)) continue;
+			if(board[newX][newY] == 3 ) return true;	
+		}
+		
+		// pawns
+		if(!oob(x-1, y+1) && board[x-1][y-1] == 1) return true;
+		if(!oob(x+1, y+1) && board[x+1][y-1] == 1) return true;
+		
+		// king
+		for(int i = -1; i <= 1; i++) {
+			for(int j = -1; j <= 1; j++) {
+				if(oob(x+i, y+j)) continue;
+				if(board[x+i][y+j] == 6) return true;
+			}
+		}
+		
+		// files and diagonals
+		newX = x;
+		newY = y;
+		while(true) {
+			newY++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 2 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX++;
+			newY++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 4 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 2 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX++;
+			newY--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 4 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newY--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 2 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX--;
+			newY--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 4 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX--;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 2 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		newX = x;
+		newY = y;
+		while(true) {
+			newX--;
+			newY++;
+			if(oob(newX, newY)) break;
+			if(board[newX][newY] == 0 || board[newX][newY] == -6) continue;
+			if(board[newX][newY] < 0) break;
+			if(board[newX][newY] == 4 || board[newX][newY] == 5) return true;
+			break;
+		}
+		
+		return false;
+	}
+	
+	public boolean canWhiteKingSideCastle() {
+		if(whiteKingSideCastlingPiecesMoved) return false;
+		if(board[5][0] != 0 || board[6][0] != 0) return false;
+		if(whiteKingInCheck(coordinates[4][0]) || whiteKingInCheck(coordinates[5][0]) || whiteKingInCheck(coordinates[6][0])) return false;
+		return true;
+	}
+	
+	public boolean canWhiteQueenSideCastle() {
+		if(whiteQueenSideCastlingPiecesMoved) return false;
+		if(board[3][0] != 0 || board[2][0] != 0 || board[1][0] != 0) return false;
+		if(whiteKingInCheck(coordinates[4][0]) || whiteKingInCheck(coordinates[3][0]) || whiteKingInCheck(coordinates[2][0]) || whiteKingInCheck(coordinates[1][0])) return false;
+		return true;
+	}
+	
+	public boolean canBlackKingSideCastle() {
+		if(blackKingSideCastlingPiecesMoved) return false;
+		if(board[5][7] != 0 || board[6][7] != 0) return false;
+		if(blackKingInCheck(coordinates[4][7]) || blackKingInCheck(coordinates[5][7]) || blackKingInCheck(coordinates[6][7])) return false;
+		return true;
+	}
+	
+	public boolean canBlackQueenSideCastle() {
+		if(blackQueenSideCastlingPiecesMoved) return false;
+		if(board[3][7] != 0 || board[2][7] != 0 || board[1][7] != 0) return false;
+		if(blackKingInCheck(coordinates[4][7]) || whiteKingInCheck(coordinates[3][7]) || whiteKingInCheck(coordinates[2][7]) || whiteKingInCheck(coordinates[1][7])) return false;
+		return true;
 	}
 	
 	public boolean oob(int x, int y) {
